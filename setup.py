@@ -1,17 +1,58 @@
-from distutils import sysconfig
-from setuptools import setup, find_packages  # Always prefer setuptools over distutils
-from codecs import open  # To use a consistent encoding
-from os import path, unlink
-from glob import glob
-from shutil import copyfile
-from sys import argv
+import glob
+import os.path
+import pathlib
+import shutil
 
-here = path.abspath(path.dirname(__file__))
+from distutils import sysconfig
+from pathlib import Path
+from setuptools import setup, Command
+
+
+#from distutils import sysconfig
+#from setuptools import setup, find_packages  # Always prefer setuptools over distutils
+#from codecs import open  # To use a consistent encoding
+#from glob import glob
+#from os import path
+#from shutil import rmtree
+#from sys import argv
+
+here = Path(__file__).parent.absolute()
 site_packages_path = sysconfig.get_python_lib()
 
 # Get the long description from the relevant file
-with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
+with open(str(here / 'DESCRIPTION.rst')) as f:
     long_description = f.read()
+
+
+
+class CleanCommand(Command):
+    """Custom clean command to tidy up the project root."""
+
+    CLEAN_FILES = './build ./dist ./*.pyc ./*.tgz ./*.egg-info'.split(' ')
+    
+    user_options = []
+    def initialize_options(self):
+        pass
+    def finalize_options(self):
+        pass
+    def run(self):
+        """
+        Remove .egg info etc
+        """
+        for path_spec in self.CLEAN_FILES:
+            # Make paths absolute and relative to this path
+            abs_paths = here.glob(path_spec)
+            for path in [str(p) for p in abs_paths]:
+                print('removing %s' % path)
+                shutil.rmtree(path)
+
+# Further down when you call setup()
+setup(
+    # ... Other setup options
+    cmdclass={
+        'clean': CleanCommand,
+    }
+)
 
 setup(
     name='melange',
@@ -82,7 +123,7 @@ setup(
 
     entry_points = {
             'console_scripts': [
-                'melangeadmin = melange.admin:main'
+                'melange = melange.admin:main'
             ]
         },
 )
