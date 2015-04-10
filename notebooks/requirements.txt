@@ -1,0 +1,10 @@
+# pip install -r requirements.txt
+# 
+# ipython notebook
+#
+# 
+ipython
+pyzmq
+jinja2
+tornado
+jsonschema
