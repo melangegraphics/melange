@@ -7,15 +7,6 @@ from distutils import sysconfig
 from pathlib import Path
 from setuptools import setup, Command
 
-
-#from distutils import sysconfig
-#from setuptools import setup, find_packages  # Always prefer setuptools over distutils
-#from codecs import open  # To use a consistent encoding
-#from glob import glob
-#from os import path
-#from shutil import rmtree
-#from sys import argv
-
 here = Path(__file__).parent.absolute()
 site_packages_path = sysconfig.get_python_lib()
 
@@ -24,9 +15,10 @@ with open(str(here / 'DESCRIPTION.rst')) as f:
     long_description = f.read()
 
 
-
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
+    # Built on info from http://stackoverflow.com/questions/3779915/why-does-python-setup-py-sdist-create-unwanted-project-egg-info-in-project-r
+    # Ported to python3 pathlib
 
     CLEAN_FILES = './build ./dist ./*.pyc ./*.tgz ./*.egg-info'.split(' ')
     
@@ -51,10 +43,8 @@ setup(
     # ... Other setup options
     cmdclass={
         'clean': CleanCommand,
-    }
-)
-
-setup(
+    },
+    
     name='melange',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
@@ -73,7 +63,7 @@ setup(
     author_email='stuaxo2@yahoo.com',
 
     # Choose your license
-    license='GPL',
+    license='LGPL',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
