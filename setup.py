@@ -31,10 +31,15 @@ class CleanCommand(Command):
         """
         Remove .egg info etc
         """
+        global here
+        
         for path_spec in self.CLEAN_FILES:
             # Make paths absolute and relative to this path
             abs_paths = here.glob(path_spec)
             for path in [str(p) for p in abs_paths]:
+                if not str(path).startswith(str(here)):
+                    # Die if path in CLEAN_FILES is absolute + outside this directory
+                    raise ValueError("%s is not a path inside %s" % (path, here))
                 print('removing %s' % path)
                 shutil.rmtree(path)
 
