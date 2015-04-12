@@ -31,11 +31,24 @@ class Admin(cmdln.Cmdln):
         ${cmd_usage}                            # (1)
         ${cmd_option_list}
         """
-
         if not projectname:
             print('projectname not specified')
         else:
             startproject(projectname, opts.template or "default")
+
+    @cmdln.option("-c", "--client",                     # (1)
+                    help="which client to use?")
+    def do_run(self, subcmd, opts, projectdir="."):
+        """${cmd_name}: create new melange project
+
+        ${cmd_usage}                            # (1)
+        ${cmd_option_list}
+        """
+        from melange import client
+        client.run(opts.client)
+        #if not os.path.isfile(os.path.join(projectdir, "melange.cfg")):
+        #    print("melange.cfg not found")
+        #    pass
 
 def main():
     try:

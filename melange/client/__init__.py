@@ -15,31 +15,45 @@ class ClientException(Exception):
         return self.msg
 
 
-def run_client(name):
-    exec('import %s as client' % name)
+def client_can_run(name):
     try:
-        client.init()
+        exec('from . import %s as client; client.can_run()' % name)
+        print('%s client OK' % name)
+        return True
     except ClientException as e:
-        print('Client error %s' % str(e))
+        print('%s client error %s' % (name, str(e)))
+    except Exception as e:
+        print('%s client exception %s' % (name, str(e)))
+
+def run_client(name):
+    try:
+        exec('from . import %s as client; client.can_run()' % name)
+    except ClientException as e:
+        print('%s client error %s' % (name, str(e)))
+    except Exception as e:
+        print('%s client exception %s' % (name, str(e)))
 
 
 def run(client=None):
     if client is not None:
+        client_can_run(client)
         run_client(client)
     else:
-        clients = list(CLIENT_ORDER)
         client_errors = []
+        clients = []
         # Find the first working client
-        for client in clients:
+        for name in list(CLIENT_ORDER):
             try:
-                client.init()
+                client_can_run(name)
+                break
             except ClientException as e:
                 client_errors.append(client, e)
         else:
-            print('Could not start any clients.')
-            print('HINT:')
-            print('  Install client dependencies with melange clientinstall %client')
-            print('  e.g')
-            print('  melange clientinstall pypy')
-            for client in clients:
-                print('    %s' % client)
+            if not clients:
+                print('Could not start any clients.')
+                print('HINT:')
+                print('  Install client dependencies with melange clientinstall %client')
+                print('  e.g')
+                print('  melange clientinstall pypy')
+                for client in list(CLIENT_ORDER):
+                    print('    %s' % client)
