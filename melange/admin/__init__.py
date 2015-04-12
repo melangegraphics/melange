@@ -2,16 +2,46 @@
 melangeadmin commandline
 """
 
-def startproject(project_dir, project_type="default"):
-    """
-    Create a new melange project.
-    """
+import cmdln
+import os
+import shutil
+import sys
 
-    # TODO Copy files from templates/{project_type} to project_dir
+def startproject(projectname, template):
+    if os.path.isdir(projectname):
+        print("directory already exists, not overwritting.")
+        return False
 
-    # TODO Create a new virtualenv and install everything needed
-    pass
+    template_path=os.path.join(os.path.dirname(__file__), "templates", template)
+    if not os.path.isdir(template_path):
+        print("cannot find template '%s'" % template)
+    
+    print("creating project %s using template %s" % (projectname, template))
+    shutil.copytree(template_path, projectname)
+    
+
+class Admin(cmdln.Cmdln):
+    name="melange"
+    
+    @cmdln.option("-t", "--template",                     # (1)
+                    help="which project template to use?")
+    def do_startproject(self, subcmd, opts, projectname=None):
+        """${cmd_name}: create new melange project
+
+        ${cmd_usage}                            # (1)
+        ${cmd_option_list}
+        """
+
+        if not projectname:
+            print('projectname not specified')
+        else:
+            startproject(projectname, opts.template or "default")
 
 def main():
-    print('Melange Admin')
-    pass
+    try:
+        admin = Admin()
+    except Exception as e:
+        print('oops')
+        pass
+    sys.exit(admin.main())
+
