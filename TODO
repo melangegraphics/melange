@@ -1,0 +1,28 @@
+melange/__init__ has start of app/canvas ... needs to be worked out properly
+and hooked up with 'melange run'
+
+
+In a python shell can import like:
+
+import melange
+dir(melange)
+
+
+an 'app' should provide a canvas instance...  'main.py' should have the
+imports for this - maybe you get something like:
+
+import melange.app
+
+@melange.app
+def draw(canvas):
+    im = canvas.image(0, 0, "http://i2.kym-cdn.com/photos/images/facebook/000/581/567/bab.jpg")
+    im.draw()  ## not sure on any of this syntax yet
+
+
+--- thing is; working out the decorators, started trying to use wrapt
+    to get decorators that can optionally take params, but doesn't seem
+    to work fully ?
+
+
+- Need to make 'melange run' pick a client/renderer and run this
+- Implement 'image'  see also 
