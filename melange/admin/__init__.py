@@ -7,7 +7,13 @@ import os
 import shutil
 import sys
 
+
 def startproject(projectname, template):
+    """
+    :param projectname: directory to copy template to
+    :param template: project template name
+    :return:
+    """
     if os.path.isdir(projectname):
         print("directory already exists, not overwritting.")
         return False
@@ -32,7 +38,7 @@ class Admin(cmdln.Cmdln):
         ${cmd_option_list}
         """
         if not projectname:
-            print('projectname not specified')
+            raise cmdln.CmdlnUserError('projectname not specified')
         else:
             startproject(projectname, opts.template or "default")
 
@@ -56,5 +62,6 @@ def main():
     except Exception as e:
         print('oops')
         pass
-    sys.exit(admin.main())
+    admin.cmdloop()
+    #sys.exit(admin.main())
 

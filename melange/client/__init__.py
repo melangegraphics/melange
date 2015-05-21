@@ -3,8 +3,10 @@ from enum import Enum
 # If no client is specified try these in order
 CLIENT_ORDER=['pyglet', 'web']
 
+
 class ClientReason(Enum):
     dependencies = 1
+
 
 class ClientException(Exception):
     def __init__(self, msg, reason):
